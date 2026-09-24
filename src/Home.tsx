@@ -29,7 +29,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { toast } from "sonner";
-import guardianLogo from "./assets/guardian-logo-header.png";
+import guardianLogo from "./assets/guardian-logo-header-transparent.png";
 
 type Status = "BLACK" | "RED" | "YELLOW";
 type EntityType = "Employee" | "Company" | "NGO / INGO";
