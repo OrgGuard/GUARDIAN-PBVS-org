@@ -392,6 +392,38 @@ function RecommendationDetailModal({ item, onClose }: { item: (typeof recommenda
   );
 }
 
+function ReportModal({ onClose }: { onClose: () => void }) {
+  const [submitted, setSubmitted] = useState(false);
+  const [fileName, setFileName] = useState("");
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+    document.addEventListener("keydown", handler);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", handler); document.body.style.overflow = ""; };
+  }, [onClose]);
+
+  return (
+    <motion.div className="modal-backdrop report-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <motion.div className="report-modal" initial={{ opacity: 0, y: 24, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 24 }} role="dialog" aria-modal="true" aria-labelledby="report-title">
+        <button className="modal-close" onClick={onClose} aria-label="Close report form"><X size={18} /></button>
+        {!submitted ? <>
+          <div className="report-heading"><span className="eyebrow"><TriangleAlert size={13} /> SECURE REPORT INTAKE</span><h2 id="report-title">Report a <span>concern.</span></h2><p>Share the details below so GUARDIAN can review the matter responsibly and securely.</p></div>
+          <form className="report-form" onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }}>
+            <label>Reporter Name<input required placeholder="Enter your full name" /></label>
+            <label>Reporter NRC<input required placeholder="e.g. 9/KAMASA(N)123456" /></label>
+            <label>Reporter Location<input required placeholder="Township, city or region" /></label>
+            <label>Reporter Contact Number<input required type="tel" placeholder="e.g. +95 9 000 000 000" /></label>
+            <label className="report-file-field">Crime Evidence Images or documents<input type="file" onChange={(event) => setFileName(event.target.files?.[0]?.name ?? "")} /><small>{fileName || "Choose File"}</small></label>
+            <button className="button-primary report-submit" type="submit">Report <ArrowRight size={16} /></button>
+          </form>
+          <p className="report-footnote">GUARDIAN will contact you in 3 days.</p>
+        </> : <div className="report-success"><div className="report-success-icon"><Check size={26} /></div><span className="eyebrow">REPORT RECEIVED</span><h2>Thank you for <span>speaking up.</span></h2><p>Your concern has been securely logged for responsible review. A GUARDIAN team member will contact you within 3 days.</p><button className="button-primary" onClick={onClose}>Close <ArrowRight size={16} /></button></div>}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -400,6 +432,7 @@ function Home() {
   const [entityType, setEntityType] = useState<EntityType | "ALL">("ALL");
   const [selectedRecord, setSelectedRecord] = useState<RiskRecord | null>(null);
   const [selectedRecommendation, setSelectedRecommendation] = useState<(typeof recommendations)[number] | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
   const [cookieVisible, setCookieVisible] = useState(true);
   const [activePlan, setActivePlan] = useState("Monthly");
 
@@ -467,10 +500,11 @@ function Home() {
 
       <footer className="site-footer"><div className="footer-top"><div><button className="brand-lockup footer-brand" onClick={() => jumpTo("overview")}><LogoMark small /><span><b>GUARDIAN</b><small>PBVS / RISK INTELLIGENCE</small></span></button><p>Eliminate workplace risks before they cost your enterprise.</p></div><div className="footer-links"><div><b>Explore</b><button onClick={() => jumpTo("verify")}>Verify records</button><button onClick={() => jumpTo("orgguard")}>OrgGuard</button><button onClick={() => jumpTo("about")}>About us</button></div><div><b>Connect</b><a href="mailto:guardianpbvs@gmail.com"><Mail size={14} /> Email</a><a href="#linkedin"><Linkedin size={14} /> LinkedIn</a><a href="#youtube"><Youtube size={14} /> Updates</a></div></div></div><div className="footer-bottom"><span>© 2026 GUARDIAN PBVS. All rights reserved.</span><span>Privacy & cookie policy · Legal defensibility by design</span><span className="footer-domain">gurdianpbvs82.com <ArrowUpRightIcon /></span></div></footer>
 
-      <button className="report-fab" onClick={() => toast.success("Report intake opened — our team will follow up securely.")}><TriangleAlert size={15} /> Report a concern</button>
+      <button className="report-fab" onClick={() => setReportOpen(true)}><TriangleAlert size={15} /> Report a concern</button>
       {cookieVisible && <motion.div className="cookie-banner" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}><div><LockKeyhole size={18} /><p><b>GUARDIAN uses cookies for account security</b><span>We never sell your data for advertising purposes.</span></p></div><div className="cookie-actions"><button onClick={() => toast("Cookie preferences saved.")}>Manage</button><button className="button-primary" onClick={() => setCookieVisible(false)}>Accept all <Check size={15} /></button></div></motion.div>}
       {selectedRecord && <DetailModal record={selectedRecord} onClose={() => setSelectedRecord(null)} />}
       {selectedRecommendation && <RecommendationDetailModal item={selectedRecommendation} onClose={() => setSelectedRecommendation(null)} />}
+      {reportOpen && <ReportModal onClose={() => setReportOpen(false)} />}
     </div>
   );
 }
