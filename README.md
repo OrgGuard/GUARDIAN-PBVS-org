@@ -1,33 +1,32 @@
 # GUARDIAN PBVS — Risk Intelligence
 
-เว็บไซต์ React/Vite แบบ static สำหรับเผยแพร่ด้วย GitHub Pages
+เว็บไซต์ React/Vite แบบ static สำหรับ `OrgGuard/GUARDIAN-PBVS-org` และเผยแพร่ด้วย **GitHub Actions → GitHub Pages เท่านั้น**
 
 ## ใช้งานในเครื่อง
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-เปิด URL ที่ Vite แสดงใน terminal
-
-## Build ตรวจสอบก่อน Deploy
+## ตรวจสอบ build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Deploy บน GitHub Pages
+## GitHub Pages deployment
 
-1. สร้าง GitHub repository ใหม่ แล้วอัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้ไปยัง branch `main`
-2. ไปที่ **Settings → Pages**
-3. ตั้งค่า **Source: GitHub Actions**
-4. Push ใหม่อีกครั้ง หรือกด **Actions → Deploy to GitHub Pages → Run workflow**
-5. GitHub จะสร้าง URL สำหรับเว็บไซต์ให้อัตโนมัติ
+ไฟล์ `.github/workflows/deploy-pages.yml` จะทำงานอัตโนมัติเมื่อมีการ push ไปยัง `main` หรือสั่งรันด้วยตนเองจากแท็บ **Actions** โดยจะ:
 
-ไฟล์ `.github/workflows/deploy.yml` จะ build และ deploy ทุกครั้งที่ push ไปยัง `main` โดยไม่ต้องตั้งค่า Build command ใน Pages เพิ่มเติม
+1. ติดตั้ง dependencies ด้วย `npm ci`
+2. build เว็บไซต์ด้วย `npm run build`
+3. อัปโหลดโฟลเดอร์ `dist` เป็น Pages artifact
+4. deploy artifact ด้วย `actions/deploy-pages`
+
+ใน repository settings ให้ตั้งค่า **Settings → Pages → Build and deployment → Source: GitHub Actions** เพียงครั้งเดียว หลังจากนั้นไม่ต้องใช้การ deploy จาก branch หรือการอัปโหลดไฟล์ `gh-pages` อีก
 
 ## หมายเหตุ
 
-ไฟล์รูปภาพถูกย้ายมาไว้ใน `src/assets` แล้ว เพื่อไม่ให้การ deploy พึ่งพา Manus storage เดิม และตั้งค่า Vite เป็น `base: "./"` เพื่อให้ใช้งานได้ทั้ง repository URL และ custom domain
+ไฟล์รูปภาพอยู่ใน `src/assets` แล้ว จึงไม่พึ่งพา Manus storage เดิม และ Vite ตั้งค่า `base: "./"` เพื่อรองรับทั้ง URL ของ repository และ custom domain
