@@ -108,3 +108,20 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .recommendation-detail-modal .detail-status { margin-right: 30px; }
 .recommendation-detail-modal .detail-status > span:last-child { color: #8294ae; font-size: 9px; font-weight: 800; letter-spacing: .1em; }
 @media (max-width: 520px) { .recommendation-detail-hero { align-items: start; flex-direction: column; padding: 25px 20px; } .recommendation-detail-modal .detail-status { margin: 0; justify-items: start; } .recommendation-purpose { padding: 16px 20px; } }
+
+/* Keep the brand image compact in the fixed navigation. The source asset is a high-resolution logo. */
+.header-logo-image {
+  display: block;
+  width: 120px;
+  height: 48px;
+  max-width: 120px;
+  object-fit: contain;
+  object-position: left center;
+}
+@media (max-width: 520px) {
+  .header-logo-image {
+    width: 104px;
+    height: 40px;
+    max-width: 104px;
+  }
+}
